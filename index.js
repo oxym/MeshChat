@@ -1,10 +1,23 @@
 var app = require('express')();
 var http = require('http').createServer(app);
-var count = 0
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
+var io = require('socket.io')(http);
+
+app.get('/', (req, res) => {
+	res.sendFile(__dirname + '/index.html');
 });
 
-http.listen(3000, function(){
-  console.log('listening on *:3000');
+io.on('connection', (socket) => {
+	io.emit('new user', socket.id);
+	console.log('a new user connected');
+	socket.on('chat message', (msg) => {
+		io.emit('chat message', msg);
+		console.log('message: ' + msg);
+	});
+	socket.on('disconnect', () => {
+		console.log('user disconnected');
+	});
+});
+
+http.listen(3000, () => {
+	console.log('listening on *:3000');
 });

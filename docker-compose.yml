@@ -1,9 +1,15 @@
 version: '3.5'
 services:
-  app:
+  server:
     build: .
-    command: 'node index.js'
+    command: 'node .'
     volumes:
       - .:/usr/app
     ports:
       - 3000:3000
+    networks: 
+      - socket-net
+
+networks:
+  socket-net:
+    driver: bridge
